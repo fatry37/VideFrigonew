@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="VideFrigo — Recettes anti-gaspi générées par l'IA à partir de vos ingrédients. Mode Sport, Sèche, Masse, Recomposition corporelle." />
+  <meta name="theme-color" content="#0CC870" id="themeColor" />
+  <title>VideFrigo — Recettes IA anti-gaspi</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Status bar (mobile PWA) -->
+    <div class="sbar">
+      <span id="stime">9:41</span>
+      <div class="sbar-icons">
+        <i class="ti ti-wifi" aria-hidden="true"></i>
+        <i class="ti ti-battery" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <!-- Dynamic Header -->
+    <header id="hdr" class="hdr" role="banner"></header>
+
+    <!-- Dynamic Content -->
+    <main id="cnt" class="cnt" role="main"></main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bnav" role="navigation" aria-label="Navigation principale">
+      <button class="nb" id="nb-home" onclick="go('home')" aria-label="Cuisiner">
+        <i class="ti ti-home" aria-hidden="true"></i>
+        <span>Cuisiner</span>
+      </button>
+      <button class="nb" id="nb-fav" onclick="go('fav')" aria-label="Favoris">
+        <i class="ti ti-heart" aria-hidden="true"></i>
+        <span>Favoris</span>
+      </button>
+      <button class="nb" id="nb-prof" onclick="go('prof')" aria-label="Profil">
+        <i class="ti ti-user" aria-hidden="true"></i>
+        <span>Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="/src/app.js"></script>
+</body>
+</html>
