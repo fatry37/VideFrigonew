@@ -1,59 +1,339 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="VideFrigo — Recettes anti-gaspi générées par l'IA à partir de vos ingrédients. Mode Sport, Sèche, Masse, Recomposition corporelle." />
-  <meta name="theme-color" content="#0CC870" id="themeColor" />
-  <title>VideFrigo — Recettes IA anti-gaspi</title>
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="/manifest.json" />
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-
-  <!-- Tabler Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-
-  <link rel="stylesheet" href="/src/style.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <meta name="theme-color" content="#0CC870" id="themeColor"/>
+  <title>VideFrigo — Recettes IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --p:#0CC870;--pd:#09A358;--pbg:rgba(12,200,112,.1);--ptxt:#077A40;
+  --sp:#FF6B35;--spbg:rgba(255,107,53,.11);--sptxt:#C04010;
+  --rc:#7B61FF;--rcbg:rgba(123,97,255,.10);--rctxt:#5540CC;
+  --bg:#F0F3F8;--bg2:#E4E8F0;--card:#fff;--card2:#F5F7FA;
+  --txt:#18191E;--txt2:#6B7280;--txt3:#A8B0BF;
+  --bdr:rgba(0,0,0,.07);--bdr2:rgba(0,0,0,.14);
+  --sdw:0 2px 14px rgba(0,0,0,.07);
+}
+.dark{
+  --p:#2ECC6E;--pd:#25B060;--pbg:rgba(46,204,110,.13);--ptxt:#2ECC6E;
+  --sp:#FF8050;--spbg:rgba(255,128,80,.13);--sptxt:#FF8050;
+  --rc:#9B8BFF;--rcbg:rgba(155,139,255,.13);--rctxt:#9B8BFF;
+  --bg:#0D1017;--bg2:#161B24;--card:#181D28;--card2:#1E2533;
+  --txt:#E8EDF5;--txt2:#8A96AA;--txt3:#607088;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.14);
+  --sdw:0 2px 16px rgba(0,0,0,.5);
+}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+#app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);box-shadow:0 0 60px rgba(0,0,0,.15);}
+.sbar{background:var(--card);padding:8px 16px 6px;display:flex;justify-content:space-between;align-items:center;border-bottom:.5px solid var(--bdr);font-size:12px;font-weight:500;color:var(--txt2);flex-shrink:0;padding-top:max(8px,env(safe-area-inset-top));}
+.sbar-icons{display:flex;gap:6px;}.sbar-icons i{font-size:13px;}
+.hdr{background:var(--card);padding:11px 16px 12px;border-bottom:.5px solid var(--bdr);flex-shrink:0;}
+.cnt{flex:1;padding:13px 16px 10px;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.bnav{background:var(--card);border-top:.5px solid var(--bdr);display:flex;padding:7px 0;padding-bottom:max(14px,env(safe-area-inset-bottom));flex-shrink:0;}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--txt3);font-family:'DM Sans',sans-serif;font-size:10.5px;padding:4px 0;transition:color .2s;}
+.nb i{font-size:22px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.nb.on{color:var(--p);}.nb.on i{transform:scale(1.15);}
+.dark .nb{color:#607088;}.dark .nb.on{color:var(--p);}
+.vc{background:var(--card);border-radius:16px;border:.5px solid var(--bdr);margin-bottom:10px;overflow:hidden;}
+.vcp{padding:13px 16px;}
+.slbl{font-size:10.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--txt2);margin-bottom:10px;}
+.h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--txt);letter-spacing:-.3px;}
+.h1 .ac-g{color:var(--p);}.h1 .ac-s{color:var(--sp);}.h1 .ac-r{color:var(--rc);}
+.chint{font-size:12px;color:var(--txt2);}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:7px 12px;border:.5px solid var(--bdr2);border-radius:20px;font-size:12.5px;cursor:pointer;color:var(--txt);background:var(--card);transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--p);}
+.chip.on-g{background:var(--pbg);border-color:var(--p);color:var(--ptxt);font-weight:500;}
+.chip.on-s{background:var(--spbg);border-color:var(--sp);color:var(--sptxt);font-weight:500;}
+.chip.on-r{background:var(--rcbg);border-color:var(--rc);color:var(--rctxt);font-weight:500;}
+.sarea{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;}
+.stag{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:var(--p);color:#fff;border-radius:20px;font-size:12px;font-weight:500;}
+.stag.sp{background:var(--sp);}.stag.rc{background:var(--rc);}
+.srm{background:none;border:none;color:#fff;cursor:pointer;font-size:14px;line-height:1;opacity:.8;padding:0;}
+.sw{width:44px;height:24px;background:var(--bdr2);border-radius:12px;position:relative;cursor:pointer;transition:background .25s;border:none;flex-shrink:0;}
+.sw.on{background:var(--p);}.sw.on-sp{background:var(--sp)!important;}.sw.on-rc{background:var(--rc)!important;}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.sw.on::after,.sw.on-sp::after,.sw.on-rc::after{transform:translateX(20px);}
+.mtog{display:flex;background:var(--bg2);border-radius:12px;padding:3px;gap:3px;border:.5px solid var(--bdr);}
+.mtab{flex:1;padding:8px 4px;border:none;border-radius:10px;background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:var(--txt2);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;}
+.mtab.on{background:var(--card);color:var(--txt);box-shadow:var(--sdw);}
+.mtab.sp.on{color:var(--sptxt);}.mtab.rc.on{color:var(--rctxt);}
+.gtabs{display:flex;gap:6px;}
+.gtab{flex:1;padding:9px 4px;border:.5px solid var(--bdr2);border-radius:12px;background:var(--card2);cursor:pointer;text-align:center;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.gti{font-size:18px;display:block;margin-bottom:3px;}.gtl{font-size:11px;font-weight:500;color:var(--txt2);}
+.gtab.on-s{border-color:var(--sp);background:var(--spbg);}.gtab.on-s .gtl{color:var(--sptxt);}
+.gtab.on-r{border-color:var(--rc);background:var(--rcbg);}.gtab.on-r .gtl{color:var(--rctxt);}
+.cta{width:100%;padding:14px;background:var(--p);color:#fff;border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.cta:hover{background:var(--pd);transform:translateY(-1px);}.cta:active{transform:scale(.98);}
+.cta:disabled{opacity:.38;cursor:not-allowed;transform:none;}
+.cta.sp{background:var(--sp);}.cta.sp:hover{background:#e05020;}
+.cta.rc{background:var(--rc);}.cta.rc:hover{background:#6040ee;}
+.cta.ghost{background:var(--card);color:var(--txt);border:.5px solid var(--bdr2);}
+.cta.ghost:hover{background:var(--card2);transform:translateY(-1px);}
+.rc-card{background:var(--card);border-radius:16px;border:.5px solid var(--bdr);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s;animation:fu .3s ease both;}
+.rc-card:hover{border-color:var(--p);transform:translateY(-2px);}.rc-card:active{transform:scale(.99);}
+.rc-card.sp:hover{border-color:var(--sp);}.rc-card.rc-mode:hover{border-color:var(--rc);}
+@keyframes fu{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.rct{padding:13px 16px 10px;display:flex;justify-content:space-between;align-items:flex-start;}
+.rctit{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;line-height:1.3;color:var(--txt);flex:1;padding-right:12px;}
+.rcbdg{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.btim{font-size:12px;color:var(--ptxt);background:var(--pbg);padding:4px 9px;border-radius:10px;font-weight:500;white-space:nowrap;}
+.bspt{font-size:11px;color:var(--sptxt);background:var(--spbg);padding:3px 8px;border-radius:8px;font-weight:600;}
+.brec{font-size:11px;color:var(--rctxt);background:var(--rcbg);padding:3px 8px;border-radius:8px;font-weight:600;}
+.mxs{padding:10px 16px 13px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;border-top:.5px solid var(--bdr);}
+.mxi{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.mxv{font-size:14px;font-weight:700;color:var(--txt);font-family:'Syne',sans-serif;}
+.mxl{font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+.mxbw{width:100%;height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-top:2px;}
+.mxbf{height:100%;border-radius:2px;}
+.sub{margin:0 14px 13px;background:rgba(250,189,47,.08);border:.5px solid rgba(250,189,47,.25);border-radius:12px;padding:11px 13px;}
+.sublbl{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#9A6800;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.dark .sublbl{color:#FABD2F;}.subtxt{font-size:13px;color:var(--txt2);line-height:1.5;}
+.banner{border-radius:12px;padding:11px 13px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.banner.sp{background:var(--spbg);border:.5px solid rgba(255,107,53,.2);}
+.banner.rc{background:var(--rcbg);border:.5px solid rgba(123,97,255,.2);}
+.banner i{font-size:18px;flex-shrink:0;margin-top:1px;}
+.banner.sp i{color:var(--sptxt);}.banner.rc i{color:var(--rctxt);}
+.bantxt{font-size:13px;color:var(--txt2);line-height:1.4;}
+.bantxt strong.s{color:var(--sptxt);}.bantxt strong.r{color:var(--rctxt);}
+.skel{background:var(--card);border-radius:16px;border:.5px solid var(--bdr);padding:16px;margin-bottom:10px;}
+.skl{height:13px;background:var(--card2);border-radius:7px;margin-bottom:10px;position:relative;overflow:hidden;}
+.skl::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--bdr2),transparent);animation:shim 1.5s infinite;}
+@keyframes shim{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
+.trow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:.5px solid var(--bdr);}
+.trow:last-child{border-bottom:none;}
+.tleft{display:flex;align-items:center;gap:12px;}
+.tleft i{font-size:19px;color:var(--txt2);}
+.ttit{font-size:15px;font-weight:500;color:var(--txt);}.tsub{font-size:12px;color:var(--txt2);}
+.bbtn{width:34px;height:34px;border:.5px solid var(--bdr2);border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt);font-size:18px;flex-shrink:0;transition:all .2s;}
+.bbtn:hover{border-color:var(--p);color:var(--p);}
+.ibtn{width:34px;height:34px;border:.5px solid var(--bdr2);border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt2);font-size:18px;transition:all .2s;}
+.fbtn{width:32px;height:32px;border:.5px solid var(--bdr2);border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--txt3);transition:all .2s;}
+.fbtn.on{color:#E24B4A;background:rgba(226,75,74,.09);border-color:rgba(226,75,74,.25);}
+.crow{display:flex;gap:7px;}
+.crow input{flex:1;background:var(--card);color:var(--txt);border:.5px solid var(--bdr2);border-radius:12px;padding:9px 13px;font-size:14px;font-family:'DM Sans',sans-serif;}
+.crow input:focus{outline:none;border-color:var(--p);}
+.crow input::placeholder{color:var(--txt3);}
+.crow button{padding:9px 15px;background:var(--pbg);border:.5px solid var(--p);border-radius:12px;color:var(--ptxt);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s;}
+.crow button:hover{background:var(--p);color:#fff;}
+.itags{display:flex;flex-wrap:wrap;gap:5px;}
+.itag{font-size:12px;padding:4px 9px;background:var(--card2);border:.5px solid var(--bdr);border-radius:8px;color:var(--txt2);}
+.stps{list-style:none;}.sti{display:flex;gap:12px;margin-bottom:11px;}
+.stn{width:24px;height:24px;border-radius:50%;background:var(--pbg);color:var(--ptxt);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;margin-top:1px;}
+.stn.sp{background:var(--spbg);color:var(--sptxt);}.stn.rc{background:var(--rcbg);color:var(--rctxt);}
+.stt{font-size:13.5px;line-height:1.5;color:var(--txt);}
+.empty{text-align:center;padding:40px 20px;color:var(--txt2);}
+.empty i{font-size:36px;color:var(--txt3);display:block;margin-bottom:10px;}
+.empty p{font-size:14px;line-height:1.5;}
+.pav{width:60px;height:60px;border-radius:50%;background:var(--pbg);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.errb{background:rgba(226,75,74,.08);border:.5px solid rgba(226,75,74,.25);border-radius:12px;padding:12px 14px;font-size:13px;color:#C43030;display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;}
+.dark .errb{color:#FF7070;}.errb i{flex-shrink:0;margin-top:1px;}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.score-ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;flex-shrink:0;border:3px solid var(--rc);color:var(--rctxt);}
+.score-ring.sp{border-color:var(--sp);color:var(--sptxt);}
+.recomp-phases{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.phase-card{padding:10px 12px;border-radius:12px;border:.5px solid var(--bdr2);background:var(--card2);}
+.phase-card.active{border-color:var(--rc);background:var(--rcbg);}
+.phase-icon{font-size:20px;display:block;margin-bottom:4px;}
+.phase-title{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:2px;}
+.phase-desc{font-size:11px;color:var(--txt2);line-height:1.4;}
+.voice-btn{width:100%;padding:13px 16px;border:1.5px dashed var(--bdr2);border-radius:14px;background:var(--card);color:var(--txt2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:10px;}
+.voice-btn i{font-size:20px;}
+.voice-btn:hover{border-color:var(--p);color:var(--ptxt);background:var(--pbg);}
+.voice-btn.listening{border-style:solid;border-color:#E24B4A;background:rgba(226,75,74,.07);color:#C43030;animation:pbdr 1.2s ease infinite;}
+.dark .voice-btn.listening{color:#FF7070;background:rgba(226,75,74,.12);}
+@keyframes pbdr{0%,100%{box-shadow:0 0 0 0 rgba(226,75,74,.25);}50%{box-shadow:0 0 0 6px rgba(226,75,74,0);}}
+.voice-dot{width:9px;height:9px;border-radius:50%;background:#E24B4A;flex-shrink:0;animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.voice-feedback{background:var(--card);border:.5px solid var(--p);border-radius:12px;padding:11px 14px;margin-bottom:10px;animation:fu .25s ease both;}
+.vf-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ptxt);margin-bottom:5px;}
+.vf-transcript{font-size:13.5px;color:var(--txt);line-height:1.4;font-style:italic;}
+.vf-added{font-size:12px;color:var(--txt2);margin-top:6px;}
+.cnt::-webkit-scrollbar{width:3px;}
+.cnt::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
+@media(min-width:481px){#app{border-left:.5px solid var(--bdr);border-right:.5px solid var(--bdr);}  .sbar{display:none;}}
+@media(max-width:380px){.mtab{font-size:11px;padding:7px 2px;}.h1{font-size:18px;}}
+</style>
 </head>
 <body>
-  <div id="app">
-    <!-- Status bar (mobile PWA) -->
-    <div class="sbar">
-      <span id="stime">9:41</span>
-      <div class="sbar-icons">
-        <i class="ti ti-wifi" aria-hidden="true"></i>
-        <i class="ti ti-battery" aria-hidden="true"></i>
-      </div>
+<div id="app">
+  <div class="sbar">
+    <span id="stime">9:41</span>
+    <div class="sbar-icons">
+      <i class="ti ti-wifi" aria-hidden="true"></i>
+      <i class="ti ti-battery" aria-hidden="true"></i>
     </div>
-
-    <!-- Dynamic Header -->
-    <header id="hdr" class="hdr" role="banner"></header>
-
-    <!-- Dynamic Content -->
-    <main id="cnt" class="cnt" role="main"></main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bnav" role="navigation" aria-label="Navigation principale">
-      <button class="nb" id="nb-home" onclick="go('home')" aria-label="Cuisiner">
-        <i class="ti ti-home" aria-hidden="true"></i>
-        <span>Cuisiner</span>
-      </button>
-      <button class="nb" id="nb-fav" onclick="go('fav')" aria-label="Favoris">
-        <i class="ti ti-heart" aria-hidden="true"></i>
-        <span>Favoris</span>
-      </button>
-      <button class="nb" id="nb-prof" onclick="go('prof')" aria-label="Profil">
-        <i class="ti ti-user" aria-hidden="true"></i>
-        <span>Profil</span>
-      </button>
-    </nav>
   </div>
-
-  <script src="/src/app.js"></script>
+  <header id="hdr" class="hdr"></header>
+  <main id="cnt" class="cnt"></main>
+  <nav class="bnav">
+    <button class="nb" id="nb-home" onclick="go('home')"><i class="ti ti-home" aria-hidden="true"></i><span>Cuisiner</span></button>
+    <button class="nb" id="nb-fav"  onclick="go('fav')"> <i class="ti ti-heart" aria-hidden="true"></i><span>Favoris</span></button>
+    <button class="nb" id="nb-prof" onclick="go('prof')"><i class="ti ti-user" aria-hidden="true"></i><span>Profil</span></button>
+  </nav>
+</div>
+<script>
+const S={sc:'home',dark:false,mode:'daily',goal:'maintien',recomp:'toning',ings:new Set(),recs:[],sel:null,favs:[],loading:false,err:null,prevSc:'home',voiceState:'idle',voiceTranscript:'',voiceAdded:[]};
+const CHIPS={
+  daily:[{e:'🍗',l:'Poulet'},{e:'🥚',l:'Œufs'},{e:'🍚',l:'Riz'},{e:'🍝',l:'Pâtes'},{e:'🥔',l:'Pommes de terre'},{e:'🐟',l:'Thon en boîte'},{e:'🧀',l:'Fromage'},{e:'🍅',l:'Tomates'},{e:'🧅',l:'Oignons'},{e:'🧄',l:'Ail'},{e:'🥕',l:'Carottes'},{e:'🫘',l:'Lentilles'},{e:'🥓',l:'Jambon'},{e:'🥬',l:'Épinards'},{e:'🥦',l:'Brocoli'}],
+  sport:[{e:'🥛',l:'Yaourt grec'},{e:'🍳',l:"Blanc d'œuf"},{e:'🐟',l:'Thon en boîte'},{e:'🍗',l:'Poulet'},{e:'🫘',l:'Lentilles'},{e:'🥚',l:'Œufs'},{e:'🍚',l:'Riz'},{e:'🥦',l:'Brocoli'},{e:'🍝',l:'Pâtes'},{e:'🥔',l:'Pommes de terre'},{e:'🧅',l:'Oignons'},{e:'🧄',l:'Ail'},{e:'🥕',l:'Carottes'},{e:'🥬',l:'Épinards'},{e:'🍅',l:'Tomates'},{e:'🧀',l:'Fromage cottage'}],
+  recomp:[{e:'🍗',l:'Poulet'},{e:'🥚',l:'Œufs'},{e:'🫘',l:'Lentilles'},{e:'🐟',l:'Thon en boîte'},{e:'🥛',l:'Yaourt grec'},{e:'🥦',l:'Brocoli'},{e:'🍳',l:"Blanc d'œuf"},{e:'🍚',l:'Riz complet'},{e:'🥔',l:'Patate douce'},{e:'🧀',l:'Fromage cottage'},{e:'🥬',l:'Épinards'},{e:'🧅',l:'Oignons'},{e:'🧄',l:'Ail'},{e:'🥕',l:'Carottes'},{e:'🍝',l:'Pâtes complètes'},{e:'🫑',l:'Poivron'}],
+};
+const GOAL_INFO={sport:{seche:{emoji:'🔥',short:'Sèche',desc:'< 15g lip · > 25g prot'},maintien:{emoji:'⚖️',short:'Maintien',desc:'Macros équilibrées'},masse:{emoji:'💪',short:'Masse',desc:'> 35g prot · > 400 kcal'}},recomp:{toning:{emoji:'🎯',short:'Tonification',desc:'Prot élevées · faible gras'},endurance:{emoji:'🏃',short:'Endurance',desc:'Glucides complexes · modéré'},optim:{emoji:'⚙️',short:'Optimisation',desc:'Prot + timing · tout équilibré'}}};
+function coc(){return S.mode==='sport'?'on-s':S.mode==='recomp'?'on-r':'on-g';}
+function tc(){return S.mode==='sport'?'sp':S.mode==='recomp'?'rc':'';}
+function sc2(){return S.mode==='sport'?'sp':S.mode==='recomp'?'rc':'';}
+function ac(){return S.mode==='sport'?'ac-s':S.mode==='recomp'?'ac-r':'ac-g';}
+function mc(){return S.mode==='sport'?'var(--sp)':S.mode==='recomp'?'var(--rc)':'var(--p)';}
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/['\s-]+/g,' ').trim();}
+let _vr=null;
+function toggleVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){S.err='Reconnaissance vocale non disponible sur ce navigateur.';render();return;}
+  if(S.voiceState==='listening'){_vr&&_vr.stop();S.voiceState='idle';render();return;}
+  S.voiceState='listening';S.voiceTranscript='';S.voiceAdded=[];render();
+  _vr=new SR();_vr.lang='fr-FR';_vr.continuous=false;_vr.interimResults=true;
+  _vr.onresult=(e)=>{
+    const t=Array.from(e.results).map(r=>r[0].transcript).join(' ');
+    S.voiceTranscript=t;
+    if(e.results[e.results.length-1].isFinal){S.voiceAdded=parseV(t);S.voiceState='done';}
+    render();
+  };
+  _vr.onerror=(e)=>{S.voiceState='idle';if(e.error==='not-allowed')S.err='Accès au micro refusé.';else if(e.error==='no-speech')S.err='Aucune parole détectée.';render();};
+  _vr.onend=()=>{if(S.voiceState==='listening'){S.voiceState='idle';render();}};
+  try{_vr.start();}catch(e){S.voiceState='idle';render();}
+}
+function parseV(transcript){
+  const cleaned=norm(transcript).replace(/\b(j'?ai|il y a|dans mon frigo|chez moi)\b/g,'').replace(/\b(du|de la|des|le|la|les|un|une|de|avec|et|plus|aussi)\b/g,' ').replace(/[,;.!?]+/g,' ').replace(/\s{2,}/g,' ').trim();
+  const all=[];Object.values(CHIPS).forEach(list=>list.forEach(c=>{if(!all.some(x=>x.l===c.l))all.push(c);}));
+  const added=[];
+  for(const chip of all){if(S.ings.size>=5)break;if(S.ings.has(chip.l))continue;const mw=norm(chip.l).split(' ')[0];if(mw.length>=3&&cleaned.includes(mw)){S.ings.add(chip.l);added.push(chip.l);}}
+  return added;
+}
+function scoreR(m,goal,mode){
+  if(!m)return null;let s=5;
+  if(mode==='sport'){if(goal==='seche'){if(m.lipides_g<10)s+=3;else if(m.lipides_g<15)s+=1;else if(m.lipides_g>25)s-=2;if(m.proteines_g>25)s+=2;else if(m.proteines_g>20)s+=1;}else if(goal==='masse'){if(m.proteines_g>35)s+=3;else if(m.proteines_g>25)s+=1;if(m.calories>400)s+=2;else if(m.calories<250)s-=2;}else{const r=m.proteines_g/Math.max(m.lipides_g,1);if(r>2)s+=2;else if(r>1.5)s+=1;if(m.calories<550&&m.calories>250)s+=1;}}
+  else if(mode==='recomp'){const r=m.proteines_g/Math.max(m.lipides_g,1);if(r>2.5)s+=3;else if(r>2)s+=2;else if(r>1.5)s+=1;else s-=1;if(m.calories>=300&&m.calories<=550)s+=2;else if(m.calories<250||m.calories>650)s-=1;}
+  return Math.min(10,Math.max(1,Math.round(s)));
+}
+function slbl(s){if(s>=9)return'Excellent ⭐';if(s>=7)return'Très adapté';if(s>=5)return'Correct';return'Peu adapté';}
+function mxHtml(m,nb){
+  if(!m)return'';
+  const items=[{v:m.calories,l:'kcal',c:'var(--txt2)',p:Math.min(m.calories/600*100,100)},{v:m.proteines_g+'g',l:'Prot.',c:S.mode==='recomp'?'var(--rc)':'var(--p)',p:Math.min(m.proteines_g/50*100,100)},{v:m.lipides_g+'g',l:'Lip.',c:'var(--sp)',p:Math.min(m.lipides_g/40*100,100)},{v:m.glucides_g+'g',l:'Gluc.',c:'#888',p:Math.min(m.glucides_g/80*100,100)}];
+  return`<div class="mxs" style="${nb?'padding:0;border:none;':''}">${items.map(it=>`<div class="mxi"><span class="mxv">${it.v}</span><span class="mxl">${it.l}</span><div class="mxbw"><div class="mxbf" style="width:${Math.round(it.p)}%;background:${it.c}"></div></div></div>`).join('')}</div>`;
+}
+function subH(sub){
+  if(!sub)return'';
+  let tip=sub.astuce;
+  if(S.mode==='sport'&&sub.astuce_sport)tip=sub.astuce_sport;
+  if(S.mode==='recomp'&&sub.astuce_recomp)tip=sub.astuce_recomp;
+  return`<div class="sub"><div class="sublbl"><span>💡</span><span>Substitution — ${sub.ingredient_manquant}</span></div><p class="subtxt">${tip}</p></div>`;
+}
+function skelH(){return[1,2,3].map(()=>`<div class="skel"><div class="skl" style="width:60%"></div><div class="skl" style="width:80%"></div><div class="skl" style="width:45%"></div></div>`).join('');}
+function rcH(r,i,fn){
+  const fav=S.favs.some(f=>f.titre===r.titre);
+  const s=(S.mode!=='daily'&&r.macros)?scoreR(r.macros,S.mode==='sport'?S.goal:S.recomp,S.mode):null;
+  const bdg=s!==null?(S.mode==='recomp'?`<span class="brec">✦ ${s}/10</span>`:`<span class="bspt">⚡ ${s}/10</span>`):'';
+  const cc=S.mode==='sport'?'sp':S.mode==='recomp'?'rc-mode':'';
+  return`<div class="rc-card ${cc}" style="animation-delay:${i*.1}s" onclick="${fn}(${i})"><div class="rct"><div class="rctit">${r.titre}</div><div class="rcbdg"><span class="btim"><i class="ti ti-clock" aria-hidden="true"></i> ${r.temps_preparation}</span>${bdg}</div></div><div style="padding:0 16px 10px"><div class="itags">${r.ingredients_base.map(x=>`<span class="itag">${x}</span>`).join('')}</div></div>${subH(r.substitution_maline)}${S.mode!=='daily'&&r.macros?mxHtml(r.macros,false):''}<div style="padding:9px 16px 11px;display:flex;justify-content:space-between;align-items:center;border-top:.5px solid var(--bdr)"><span style="font-size:13px;color:var(--txt2)">Voir la recette</span><div style="display:flex;align-items:center;gap:8px"><button class="fbtn${fav?' on':''}" onclick="event.stopPropagation();tfav(${i},'rec')" aria-label="Favori"><i class="ti ti-heart" aria-hidden="true"></i></button><i class="ti ti-arrow-right" style="color:var(--txt3);font-size:18px" aria-hidden="true"></i></div></div></div>`;
+}
+function renderHome(H,C){
+  const hr=new Date().getHours();
+  const grt=hr<12?'Bonjour 👋':hr<18?'Bon après-midi 🌤':'Bonsoir 🌙';
+  const sels=[...S.ings];const ok=sels.length>=2;
+  const chips=CHIPS[S.mode]||CHIPS.daily;
+  let gb='';
+  if(S.mode==='sport'){const goals=['seche','maintien','masse'];gb=`<span style="display:block;height:10px"></span><p class="chint" style="margin-bottom:7px">Objectif</p><div class="gtabs">${goals.map(g=>{const info=GOAL_INFO.sport[g];return`<button class="gtab${S.goal===g?' on-s':''}" onclick="setGoal('${g}')"><span class="gti">${info.emoji}</span><span class="gtl">${info.short}</span></button>`;}).join('')}</div>`;}
+  else if(S.mode==='recomp'){const goals=['toning','endurance','optim'];gb=`<span style="display:block;height:10px"></span><p class="chint" style="margin-bottom:7px">Phase</p><div class="gtabs">${goals.map(g=>{const info=GOAL_INFO.recomp[g];return`<button class="gtab${S.recomp===g?' on-r':''}" onclick="setRecomp('${g}')"><span class="gti">${info.emoji}</span><span class="gtl">${info.short}</span></button>`;}).join('')}</div>`;}
+  let ban='';
+  if(S.mode==='sport'){const info=GOAL_INFO.sport[S.goal];ban=`<div class="banner sp"><i class="ti ti-bolt" aria-hidden="true"></i><div class="bantxt"><strong class="s">Mode Sport — ${info.short}</strong> · ${info.desc}</div></div>`;}
+  else if(S.mode==='recomp'){const info=GOAL_INFO.recomp[S.recomp];ban=`<div class="banner rc"><i class="ti ti-refresh" aria-hidden="true"></i><div class="bantxt"><strong class="r">Recomposition — ${info.short}</strong> · ${info.desc}</div></div>`;}
+  const cc=S.mode==='sport'?'cta sp':S.mode==='recomp'?'cta rc':'cta';
+  const ci=S.mode==='recomp'?'ti-refresh':'ti-star';
+  H.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><p class="chint">${grt}</p><div class="h1">Vide<span class="${ac()}">Frigo</span></div></div><button class="ibtn" onclick="tDark()" aria-label="Thème"><i class="ti ${S.dark?'ti-sun':'ti-moon'}" aria-hidden="true"></i></button></div>`;
+  C.innerHTML=`<div class="vc"><div class="vcp"><p class="slbl">Mode</p><div class="mtog"><button class="mtab${S.mode==='daily'?' on':''}" onclick="setMode('daily')"><i class="ti ti-home" aria-hidden="true"></i> Quotidien</button><button class="mtab sp${S.mode==='sport'?' on':''}" onclick="setMode('sport')"><i class="ti ti-bolt" aria-hidden="true"></i> Sport</button><button class="mtab rc${S.mode==='recomp'?' on':''}" onclick="setMode('recomp')"><i class="ti ti-refresh" aria-hidden="true"></i> Recomp</button></div>${gb}</div></div>${ban}<div class="vc"><div class="vcp"><p class="slbl">Mes ingrédients${S.mode==='recomp'?' · Recomposition':S.mode==='sport'?' · Protéines':''}</p><div class="chips" style="margin-bottom:12px">${chips.map(c=>`<button class="chip${S.ings.has(c.l)?' '+coc():''}" onclick="ting('${c.l.replace(/'/g,"\\'")}')"><span>${c.e}</span> ${c.l}</button>`).join('')}</div><div class="crow" style="margin-bottom:12px"><input type="text" id="ci" placeholder="Autre ingrédient…" onkeydown="if(event.key==='Enter')addIng()"/><button onclick="addIng()">+ Ajouter</button></div><p class="chint" style="margin-bottom:${sels.length?'10px':'0'}">${sels.length===0?'Choisissez 2 à 5 ingrédients':sels.length<2?`Encore ${2-sels.length} ingrédient(s)`:`${sels.length} sélectionné${sels.length>1?'s':''} ✓`}</p>${sels.length?`<div class="sarea">${sels.map(i=>`<div class="stag ${tc()}">${i}<button class="srm" onclick="ring('${i.replace(/'/g,"\\'")}')">×</button></div>`).join('')}</div>`:''}</div></div>${S.err?`<div class="errb"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>${S.err}</span></div>`:''}<button class="voice-btn ${S.voiceState==='listening'?'listening':''}" onclick="toggleVoice()">${S.voiceState==='listening'?`<span class="voice-dot"></span> J'écoute…`:`<i class="ti ti-microphone" aria-hidden="true"></i> Dicter mes ingrédients`}</button>${S.voiceState==='done'&&S.voiceTranscript?`<div class="voice-feedback"><p class="vf-label">🎙️ Entendu</p><p class="vf-transcript">"${S.voiceTranscript}"</p><p class="vf-added">${S.voiceAdded.length?`✅ Ajouté : ${S.voiceAdded.join(', ')}`:'Aucun ingrédient reconnu — ajoutez-les manuellement'}</p></div>`:''}<button class="${cc}" ${!ok||S.loading?'disabled':''} onclick="gen()">${S.loading?`<span class="spin"></span> Génération en cours…`:`<i class="ti ${ci}" aria-hidden="true"></i> Trouver des recettes`}</button>${S.loading?`<span style="display:block;height:12px"></span>${skelH()}`:''}`;
+}
+function renderRes(H,C){
+  H.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><button class="bbtn" onclick="go('home')"><i class="ti ti-arrow-left" aria-hidden="true"></i></button><div><div class="h1" style="font-size:18px">Vos recettes</div><p class="chint">${[...S.ings].join(', ')}</p></div><button class="ibtn" style="margin-left:auto" onclick="tDark()"><i class="ti ${S.dark?'ti-sun':'ti-moon'}" aria-hidden="true"></i></button></div>`;
+  let ban='';
+  if(S.mode==='sport'){const i=GOAL_INFO.sport[S.goal];ban=`<div class="banner sp"><i class="ti ti-bolt" aria-hidden="true"></i><div class="bantxt"><strong class="s">${i.short}</strong> — macros affichées</div></div>`;}
+  else if(S.mode==='recomp'){const i=GOAL_INFO.recomp[S.recomp];ban=`<div class="banner rc"><i class="ti ti-refresh" aria-hidden="true"></i><div class="bantxt"><strong class="r">${i.short}</strong> — score recompo</div></div>`;}
+  C.innerHTML=`${ban}${S.recs.map((r,i)=>rcH(r,i,'openR')).join('')}<button class="cta ghost" style="margin-top:6px" onclick="go('home')"><i class="ti ti-refresh" aria-hidden="true"></i> Nouvelle recherche</button>`;
+}
+function renderDet(H,C){
+  const r=S.sel;if(!r){go('res');return;}
+  const fav=S.favs.some(f=>f.titre===r.titre);
+  const s=(S.mode!=='daily'&&r.macros)?scoreR(r.macros,S.mode==='sport'?S.goal:S.recomp,S.mode):null;
+  H.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><button class="bbtn" onclick="goBack()"><i class="ti ti-arrow-left" aria-hidden="true"></i></button><div class="h1" style="font-size:16px;flex:1;line-height:1.3">${r.titre}</div><button class="fbtn${fav?' on':''}" onclick="tfav(0,'det')"><i class="ti ti-heart" aria-hidden="true"></i></button></div>`;
+  let mx='';
+  if(S.mode!=='daily'&&r.macros){const sb=s!==null?`<div style="margin-top:12px;padding-top:10px;border-top:.5px solid var(--bdr);display:flex;align-items:center;gap:12px"><div class="score-ring${S.mode==='recomp'?'':' sp'}">${s}</div><div><p style="font-size:14px;font-weight:600;color:${mc()}">${slbl(s)}</p><p class="chint">Score /10</p></div></div>`:'';mx=`<div class="vc" style="margin-bottom:10px"><div class="vcp"><p class="slbl">Valeurs nutritionnelles estimées</p>${mxHtml(r.macros,true)}${sb}</div></div>`;}
+  const sub=r.substitution_maline?`<div class="vc" style="margin-bottom:10px"><div class="vcp"><div class="sublbl"><span>💡</span><span>Substitution — ${r.substitution_maline.ingredient_manquant}</span></div><p class="subtxt" style="margin-top:6px">${S.mode==='recomp'&&r.substitution_maline.astuce_recomp?r.substitution_maline.astuce_recomp:S.mode==='sport'&&r.substitution_maline.astuce_sport?r.substitution_maline.astuce_sport:r.substitution_maline.astuce}</p></div></div>`:'';
+  const snc=sc2();
+  C.innerHTML=`<div class="vc" style="margin-bottom:10px"><div class="vcp"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="btim"><i class="ti ti-clock" aria-hidden="true"></i> ${r.temps_preparation}</span>${s!==null?(S.mode==='recomp'?`<span class="brec">✦ ${s}/10</span>`:`<span class="bspt">⚡ ${s}/10</span>`):''}  </div><span style="display:block;height:10px"></span><p class="slbl">Ingrédients</p><div class="itags">${r.ingredients_base.map(x=>`<span class="itag">${x}</span>`).join('')}</div></div></div>${sub}${mx}<div class="vc" style="margin-bottom:10px"><div class="vcp"><p class="slbl">Étapes</p><ul class="stps">${r.etapes.map((step,i)=>`<li class="sti"><span class="stn ${snc}">${i+1}</span><span class="stt">${step}</span></li>`).join('')}</ul></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="cta ghost" style="font-size:13px;padding:11px" onclick="tfav(0,'det')"><i class="ti ti-heart" aria-hidden="true"></i> ${fav?'Retiré':'Sauvegarder'}</button><button class="cta" style="font-size:13px;padding:11px;background:${mc()}" onclick="go('home')"><i class="ti ti-refresh" aria-hidden="true"></i> Nouvelle</button></div>`;
+}
+function renderFav(H,C){
+  H.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div><div class="h1">Favoris</div><p class="chint">${S.favs.length} recette${S.favs.length!==1?'s':''} sauvegardée${S.favs.length!==1?'s':''}</p></div><button class="ibtn" onclick="tDark()"><i class="ti ${S.dark?'ti-sun':'ti-moon'}" aria-hidden="true"></i></button></div>`;
+  if(!S.favs.length){C.innerHTML=`<div class="empty"><i class="ti ti-heart" aria-hidden="true"></i><p>Aucune recette sauvegardée.<br>Explorez et ajoutez vos favoris !</p></div><button class="cta" onclick="go('home')"><i class="ti ti-star" aria-hidden="true"></i> Trouver des recettes</button>`;return;}
+  C.innerHTML=S.favs.map((r,i)=>{const s=(S.mode!=='daily'&&r.macros)?scoreR(r.macros,S.mode==='sport'?S.goal:S.recomp,S.mode):null;return`<div class="rc-card" style="animation-delay:${i*.08}s" onclick="openF(${i})"><div class="rct"><div class="rctit">${r.titre}</div><div class="rcbdg"><span class="btim"><i class="ti ti-clock" aria-hidden="true"></i> ${r.temps_preparation}</span>${s?`<span class="brec">✦ ${s}/10</span>`:''}</div></div><div style="padding:0 16px 10px"><div class="itags">${r.ingredients_base.slice(0,4).map(x=>`<span class="itag">${x}</span>`).join('')}${r.ingredients_base.length>4?`<span class="itag">+${r.ingredients_base.length-4}</span>`:''}</div></div><div style="padding:8px 16px 11px;display:flex;justify-content:space-between;align-items:center;border-top:.5px solid var(--bdr)"><span style="font-size:13px;color:var(--txt2)">Voir la recette</span><button class="fbtn on" onclick="event.stopPropagation();rmFav(${i})"><i class="ti ti-heart" aria-hidden="true"></i></button></div></div>`;}).join('');
+}
+function renderProf(H,C){
+  H.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><div class="h1">Profil</div><button class="ibtn" onclick="tDark()"><i class="ti ${S.dark?'ti-sun':'ti-moon'}" aria-hidden="true"></i></button></div>`;
+  const rph=S.mode==='recomp'?`<div class="trow" style="flex-direction:column;align-items:flex-start;gap:10px;border-bottom:none"><p class="ttit">Phase de recomposition</p><div class="recomp-phases">${[{id:'toning',e:'🎯',t:'Tonification',d:'Prot élevées, gras faible'},{id:'endurance',e:'🏃',t:'Endurance',d:'Glucides + récupération'},{id:'optim',e:'⚙️',t:'Optimisation',d:'Partition maximale'}].map(p=>`<div class="phase-card${S.recomp===p.id?' active':''}" onclick="setRecomp('${p.id}');render()" style="cursor:pointer"><span class="phase-icon">${p.e}</span><p class="phase-title">${p.t}</p><p class="phase-desc">${p.d}</p></div>`).join('')}<div style="grid-column:1/-1;font-size:12px;color:var(--txt2);line-height:1.4">La recomposition vise à perdre de la graisse et gagner du muscle simultanément.</div></div></div>`:'';
+  const sgh=S.mode==='sport'?`<div class="trow" style="flex-direction:column;align-items:flex-start;gap:10px;border-bottom:none"><p class="ttit">Objectif sportif</p><div class="gtabs">${['seche','maintien','masse'].map(g=>{const info=GOAL_INFO.sport[g];return`<button class="gtab${S.goal===g?' on-s':''}" onclick="setGoal('${g}')"><span class="gti">${info.emoji}</span><span class="gtl">${info.short}</span></button>`;}).join('')}</div></div>`:'';
+  C.innerHTML=`<div class="vc" style="margin-bottom:10px"><div class="vcp" style="display:flex;align-items:center;gap:14px"><div class="pav">🧑‍🍳</div><div><p style="font-weight:600;font-size:16px;color:var(--txt)">Chef du Frigo</p><p class="chint">${S.favs.length} favori${S.favs.length!==1?'s':''} · Mode ${S.mode==='daily'?'Quotidien':S.mode==='sport'?'Sport ⚡':'Recomp ✦'}</p></div></div></div><div class="vc" style="margin-bottom:10px"><div class="vcp"><p class="slbl">Préférences</p><div class="trow"><div class="tleft"><i class="ti ${S.dark?'ti-moon':'ti-sun'}" aria-hidden="true"></i><div><p class="ttit">Mode sombre</p><p class="tsub">${S.dark?'Actif':'Inactif'}</p></div></div><button class="sw${S.dark?' on':''}" onclick="tDark()"></button></div><div class="trow"><div class="tleft"><i class="ti ti-home" style="color:${S.mode==='daily'?'var(--p)':'var(--txt2)'}" aria-hidden="true"></i><div><p class="ttit">Mode Quotidien</p><p class="tsub">Recettes simples</p></div></div><button class="sw${S.mode==='daily'?' on':''}" onclick="setMode('daily')"></button></div><div class="trow"><div class="tleft"><i class="ti ti-bolt" style="color:${S.mode==='sport'?'var(--sptxt)':'var(--txt2)'}" aria-hidden="true"></i><div><p class="ttit">Mode Sport</p><p class="tsub">${S.mode==='sport'?'Activé':'Sèche / Maintien / Masse'}</p></div></div><button class="sw${S.mode==='sport'?' on on-sp':''}" onclick="setMode(S.mode==='sport'?'daily':'sport')"></button></div><div class="trow"><div class="tleft"><i class="ti ti-refresh" style="color:${S.mode==='recomp'?'var(--rctxt)':'var(--txt2)'}" aria-hidden="true"></i><div><p class="ttit">Mode Recomposition</p><p class="tsub">${S.mode==='recomp'?'Activé':'Tonification / Endurance / Optim'}</p></div></div><button class="sw${S.mode==='recomp'?' on on-rc':''}" onclick="setMode(S.mode==='recomp'?'daily':'recomp')"></button></div>${sgh}${rph}</div></div><div class="vc"><div class="vcp"><p class="slbl">À propos</p><p style="font-size:13px;color:var(--txt2);line-height:1.5"><strong style="color:var(--txt)">VideFrigo</strong> — Recettes anti-gaspi par IA Gemini. Modes Sport et Recomposition corporelle.</p></div></div>`;
+}
+function render(){
+  document.getElementById('app').className=S.dark?'dark':'';
+  const tc2=document.getElementById('themeColor');if(tc2)tc2.content=S.dark?'#181D28':'#0CC870';
+  const tel=document.getElementById('stime');if(tel){const n=new Date();tel.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+  const nm={home:'home',res:'home',det:'home',fav:'fav',prof:'prof'};
+  ['home','fav','prof'].forEach(id=>{const b=document.getElementById('nb-'+id);if(b)b.className='nb'+(nm[S.sc]===id?' on':'');});
+  const H=document.getElementById('hdr'),C=document.getElementById('cnt');
+  ({home:renderHome,res:renderRes,det:renderDet,fav:renderFav,prof:renderProf})[S.sc](H,C);
+  if(C)C.scrollTop=0;
+}
+function go(sc){S.prevSc=S.sc;S.sc=sc;S.err=null;if(sc!=='home'){S.voiceState='idle';S.voiceTranscript='';}render();}
+function goBack(){S.sc=S.prevSc||'res';render();}
+function tDark(){S.dark=!S.dark;render();}
+function setMode(m){S.mode=m;render();}
+function setGoal(g){S.goal=g;render();}
+function setRecomp(g){S.recomp=g;render();}
+function ting(i){if(S.ings.has(i)){S.ings.delete(i);}else{if(S.ings.size>=5)return;S.ings.add(i);}render();}
+function ring(i){S.ings.delete(i);render();}
+function addIng(){const el=document.getElementById('ci');if(!el)return;const v=el.value.trim();if(!v||S.ings.size>=5)return;S.ings.add(v);el.value='';render();}
+function openR(i){S.prevSc='res';S.sel=S.recs[i];S.sc='det';render();}
+function openF(i){S.prevSc='fav';S.sel=S.favs[i];S.sc='det';render();}
+function tfav(i,ctx){const r=ctx==='det'?S.sel:S.recs[i];if(!r)return;const fi=S.favs.findIndex(f=>f.titre===r.titre);fi>=0?S.favs.splice(fi,1):S.favs.push(r);render();}
+function rmFav(i){S.favs.splice(i,1);render();}
+async function gen(){
+  const ings=[...S.ings];if(ings.length<2)return;
+  S.loading=true;S.err=null;render();
+  const mi={sport:{seche:"SÈCHE : recettes < 15g lipides, > 25g protéines.",maintien:"MAINTIEN : macros équilibrées, ratio prot/lip ≥ 2:1.",masse:"MASSE : > 35g protéines, > 400 kcal."},recomp:{toning:"TONIFICATION : prot > 30g, lip < 15g, gluc 25-40g.",endurance:"ENDURANCE : gluc complexes > 40g, prot 20-30g.",optim:"OPTIMISATION : prot 35-40%, gluc 35-40%, lip 20-25%."}};
+  const isSport=S.mode==='sport',isRecomp=S.mode==='recomp',needM=isSport||isRecomp;
+  let mb='';
+  if(isSport)mb=`\nMODE SPORT — ${S.goal}: ${mi.sport[S.goal]}\n- Champ "macros" OBLIGATOIRE.\n- Champ "astuce_sport" dans substitution_maline.\n`;
+  if(isRecomp)mb=`\nMODE RECOMPOSITION — ${S.recomp}: ${mi.recomp[S.recomp]}\n- Champ "macros" OBLIGATOIRE.\n- Champ "astuce_recomp" dans substitution_maline.\n`;
+  const mf=needM?'"macros":{"calories":number,"proteines_g":number,"lipides_g":number,"glucides_g":number},':'';
+  const sf=needM?(isRecomp?'"ingredient_manquant":"string","astuce":"string","astuce_sport":null,"astuce_recomp":"string"':'"ingredient_manquant":"string","astuce":"string","astuce_sport":"string","astuce_recomp":null'):'"ingredient_manquant":"string","astuce":"string"';
+  const sys=`Tu es un chef anti-gaspi expert en nutrition. Propose 2 ou 3 recettes simples (< 20 min).\nRÈGLES:\n1. JSON valide UNIQUEMENT. Aucun texte avant/après.\n2. Ingrédients de placard autorisés.\n3. COMPROMIS DE SAVEUR : si un ingrédient manque, renseigner substitution_maline. Sinon null.\n4. Maximum 5 étapes.${mb}\nFORMAT: {"recettes":[{"titre":"string","temps_preparation":"string","ingredients_base":["string"],"substitution_maline":{${sf}} ou null,${mf}"etapes":["string"]}]}`;
+  const um=`Ingrédients: ${ings.join(', ')}.${isSport?' Sport '+S.goal+'.':''}${isRecomp?' Recomp '+S.recomp+'.':''}`;
+  try{
+    const res=await fetch('/api/recipes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ingredients:ings,mode:S.mode,goal:S.goal,recomp:S.recomp,systemPrompt:sys,userMsg:um})});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const parsed=await res.json();
+    if(parsed.error)throw new Error(parsed.error);
+    S.recs=parsed.recettes;S.sc='res';S.loading=false;render();
+  }catch(e){S.loading=false;S.err='Erreur : '+e.message;render();}
+}
+render();
+setInterval(()=>{const el=document.getElementById('stime');if(el){const n=new Date();el.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}},30000);
+</script>
 </body>
 </html>
