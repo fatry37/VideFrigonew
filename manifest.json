@@ -1,6 +1,6 @@
 {
   "name": "VideFrigo",
-  "description": "Recettes anti-gaspi générées par l'IA. Modes Sport et Recomposition corporelle.",
+  "description": "Recettes anti-gaspi générées par l'IA.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0D1017",
