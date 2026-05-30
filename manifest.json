@@ -1,8 +1,21 @@
 {
   "name": "VideFrigo",
-  "description": "Recettes anti-gaspi generees par IA.",
+  "description": "Recettes anti-gaspi générées par l'IA.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0D1017",
-  "theme_color": "#0CC870"
+  "theme_color": "#0CC870",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/public/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
